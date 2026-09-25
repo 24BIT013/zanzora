@@ -1,0 +1,13 @@
+# Django / Python local files
+__pycache__/
+*.py[cod]
+*.sqlite3
+db.sqlite3
+.env
+venv/
+.venv/
+
+# Editor and OS files
+.vscode/
+.idea/
+.DS_Store
