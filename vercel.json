@@ -3,10 +3,14 @@
   "version": 2,
   "functions": {
     "api/index.py": {
-      "includeFiles": "static/**"
+      "includeFiles": ["static/**"]
     }
   },
   "rewrites": [
+    {
+      "source": "/static/(.*)",
+      "destination": "/api/index.py"
+    },
     {
       "source": "/(.*)",
       "destination": "/api/index.py"
