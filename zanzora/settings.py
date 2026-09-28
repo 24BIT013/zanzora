@@ -11,10 +11,19 @@ except ImportError:  # WhiteNoise is installed by Render from requirements.txt.
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-zanzora-local-development-key")
-DEBUG = os.environ.get("DEBUG", "True").lower() == "true"
-ALLOWED_HOSTS = ["127.0.0.1", "localhost", "testserver"]
+IS_VERCEL = bool(os.environ.get("VERCEL"))
+IS_RENDER = bool(os.environ.get("RENDER_EXTERNAL_HOSTNAME"))
+DEBUG = os.environ.get("DEBUG", "False" if IS_VERCEL or IS_RENDER else "True").lower() == "true"
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "testserver", "zanzoradiscover.vercel.app", ".vercel.app"]
 if os.environ.get("RENDER_EXTERNAL_HOSTNAME"):
     ALLOWED_HOSTS.append(os.environ["RENDER_EXTERNAL_HOSTNAME"])
+if os.environ.get("VERCEL_URL"):
+    ALLOWED_HOSTS.append(os.environ["VERCEL_URL"])
+ALLOWED_HOSTS += [host.strip() for host in os.environ.get("ALLOWED_HOSTS", "").split(",") if host.strip()]
+CSRF_TRUSTED_ORIGINS = ["https://zanzoradiscover.vercel.app"]
+if os.environ.get("VERCEL_URL"):
+    CSRF_TRUSTED_ORIGINS.append(f"https://{os.environ['VERCEL_URL']}")
+CSRF_TRUSTED_ORIGINS += [origin.strip() for origin in os.environ.get("CSRF_TRUSTED_ORIGINS", "").split(",") if origin.strip()]
 
 INSTALLED_APPS = [
     "django.contrib.admin", "django.contrib.auth", "django.contrib.contenttypes",
