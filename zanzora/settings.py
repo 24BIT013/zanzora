@@ -24,6 +24,10 @@ CSRF_TRUSTED_ORIGINS = ["https://zanzoradiscover.vercel.app"]
 if os.environ.get("VERCEL_URL"):
     CSRF_TRUSTED_ORIGINS.append(f"https://{os.environ['VERCEL_URL']}")
 CSRF_TRUSTED_ORIGINS += [origin.strip() for origin in os.environ.get("CSRF_TRUSTED_ORIGINS", "").split(",") if origin.strip()]
+# Vercel functions have no persistent local filesystem. Cookie-backed sessions keep
+# normal browsing and saved journeys independent of a temporary SQLite database.
+if IS_VERCEL:
+    SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
 
 INSTALLED_APPS = [
     "django.contrib.admin", "django.contrib.auth", "django.contrib.contenttypes",
